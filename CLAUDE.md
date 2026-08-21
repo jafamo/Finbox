@@ -226,6 +226,35 @@ Todas las entidades usan UUID (no autoincrement). Se generan antes de persistir,
 - Adapter pattern para Ollama y Telegram (implementan interfaces de dominio)
 - Campos nullable cuando el dato puede no conocerse al momento de la importación
 
+## Control de versiones
+
+El proyecto usa **Git Flow**. Ramas principales:
+
+- `main` — código en producción, solo recibe merges desde `release/*` o `hotfix/*`
+- `develop` — rama de integración, base de todo el trabajo en curso
+
+Ramas de soporte (prefijos configurados con `git flow init`):
+
+- `feature/<nombre>` — nueva funcionalidad, sale de `develop` y vuelve a `develop`
+- `bugfix/<nombre>` — corrección de bugs no urgentes, sale de `develop` y vuelve a `develop`
+- `release/<version>` — preparación de una versión, sale de `develop` y se fusiona en `main` y `develop`
+- `hotfix/<version>` — corrección urgente en producción, sale de `main` y se fusiona en `main` y `develop`
+
+Uso típico con el CLI de `git flow`:
+
+```bash
+git flow feature start nombre-funcionalidad
+git flow feature finish nombre-funcionalidad
+
+git flow release start 1.2.0
+git flow release finish 1.2.0
+
+git flow hotfix start 1.2.1
+git flow hotfix finish 1.2.1
+```
+
+Los mensajes de commit siguen Conventional Commits (ver skill `codely-git-conventional_commit`).
+
 ## Documentación
 
 - `/docs/spec_mvp_recibos_v0.3.md` — Especificación funcional completa
