@@ -255,6 +255,26 @@ git flow hotfix finish 1.2.1
 
 Los mensajes de commit siguen Conventional Commits (ver skill `codely-git-conventional_commit`).
 
+## Spec-driven development (OpenSpec)
+
+El proyecto usa **OpenSpec** para gestionar cambios significativos como propuestas escritas antes de implementar. Vive en `/openspec/`:
+
+- `openspec/specs/` — especificaciones vigentes del comportamiento actual del sistema
+- `openspec/changes/` — propuestas de cambio en curso (proposal, design, tasks)
+- `openspec/changes/archive/` — cambios ya aplicados y archivados
+
+Flujo con los slash commands (`.claude/commands/opsx/`):
+
+```bash
+/opsx:propose "descripción del cambio"   # crea la propuesta y sus artefactos (proposal, design, tasks)
+/opsx:apply                              # implementa las tasks de un cambio ya propuesto
+/opsx:sync                               # sincroniza specs con el código tras aplicar
+/opsx:archive                            # archiva un cambio completado
+/opsx:explore                            # explora specs y cambios existentes
+```
+
+Cada cambio significativo (nueva entidad, nuevo flujo, cambio de contrato) debe pasar primero por una propuesta OpenSpec antes de tocar código. Combínalo con Git Flow: la rama `feature/<nombre>` se abre para implementar un cambio ya propuesto en `openspec/changes/`.
+
 ## Documentación
 
 - `/docs/spec_mvp_recibos_v0.3.md` — Especificación funcional completa
