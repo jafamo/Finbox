@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:${POSTGRES_VERSION}
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -15,6 +16,7 @@ services:
       context: ./docker/php
       args:
         PHP_VERSION: ${PHP_VERSION}
+    restart: unless-stopped
     environment:
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
     volumes:
@@ -30,6 +32,7 @@ services:
       context: ./docker/nginx
       args:
         NGINX_VERSION: ${NGINX_VERSION}
+    restart: unless-stopped
     ports:
       - "${NGINX_PORT}:80"
     volumes:
@@ -42,6 +45,7 @@ services:
       context: ./docker/php
       args:
         PHP_VERSION: ${PHP_VERSION}
+    restart: unless-stopped
     command: php bin/console messenger:consume async -vv
     environment:
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
