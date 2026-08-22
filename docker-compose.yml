@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - gestor_recibos_postgres_data:/var/lib/postgresql/data
+
+  php:
+    build:
+      context: ./docker/php
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    restart: unless-stopped
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+    volumes:
+      - ./app:/var/www/html
+      - gestor_recibos_documents:/var/www/documents
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      args:
+        NGINX_VERSION: ${NGINX_VERSION}
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT}:80"
+    volumes:
+      - ./app:/var/www/html:ro
+    depends_on:
+      - php
+
+  worker:
+    build:
+      context: ./docker/php
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    restart: unless-stopped
+    command: php bin/console messenger:consume async -vv
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+    volumes:
+      - ./app:/var/www/html
+      - gestor_recibos_documents:/var/www/documents
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
+
+volumes:
+  gestor_recibos_postgres_data:
+    name: ${POSTGRES_DATA_VOLUME}
+  gestor_recibos_documents:
+    name: ${DOCUMENTS_VOLUME}
