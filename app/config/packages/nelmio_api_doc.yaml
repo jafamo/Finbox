@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Gestor de Recibos API
+            description: API de gestión de recibos y movimientos bancarios
+            version: 0.1.0
+    areas:
+        path_patterns:
+            - ^/(?!_(profiler|wdt|error)|health)

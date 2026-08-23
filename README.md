@@ -64,9 +64,27 @@ src/
 ## 🚀 Puesta en marcha
 
 ```bash
+# 1. Levantar el stack (postgres, php-fpm, nginx, worker de Messenger)
 docker compose up -d
-composer install
-php bin/console doctrine:migrations:migrate
+
+# 2. app/.env.local (no versionado) debe definir DATABASE_URL apuntando al
+#    postgres/credenciales del .env raíz, p. ej.:
+#    DATABASE_URL="postgresql://<user>:<pass>@postgres:5432/<db>?serverVersion=17&charset=utf8"
+
+# 3. Generar el par de claves JWT de desarrollo (no se versionan, quedan en app/config/jwt/)
+docker compose exec php php bin/console lexik:jwt:generate-keypair
+
+# 4. Verificar que el stack completo responde
+curl http://localhost:9010/health
+```
+
+Documentación Swagger/OpenAPI de la API: `http://localhost:9010/api/doc`. Colección `.http` de ejemplo en [http/](http/).
+
+### Linter (PSR-12)
+
+```bash
+docker compose exec php vendor/bin/php-cs-fixer check    # solo comprobar
+docker compose exec php vendor/bin/php-cs-fixer fix       # corregir
 ```
 
 ## 📚 Documentación
