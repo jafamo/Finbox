@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:9010
+
+### Crear banco
+POST {{baseUrl}}/api/banks
+Content-Type: application/json
+
+{
+  "name": "BBVA",
+  "internalCode": "0182",
+  "notes": "Banco principal de la cuenta familiar"
+}
+
+### Listar bancos
+GET {{baseUrl}}/api/banks
+
+### Obtener banco por id
+GET {{baseUrl}}/api/banks/{{bankId}}
+
+### Editar banco
+PUT {{baseUrl}}/api/banks/{{bankId}}
+Content-Type: application/json
+
+{
+  "name": "BBVA",
+  "internalCode": "0182",
+  "notes": "Actualizado"
+}
+
+### Eliminar banco
+DELETE {{baseUrl}}/api/banks/{{bankId}}
