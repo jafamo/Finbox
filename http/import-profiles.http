@@ -1,0 +1,64 @@
+@baseUrl = http://localhost:9010
+
+### Crear perfil de importación (CSV)
+POST {{baseUrl}}/api/import-profiles
+Content-Type: application/json
+
+{
+  "bankId": "{{bankId}}",
+  "name": "BBVA - CSV",
+  "sourceFormat": "csv",
+  "dateFormat": "d/m/Y",
+  "decimalSeparator": ",",
+  "parserConfig": {
+    "column_mapping": {"fecha": 0, "concepto": 2, "importe": 3},
+    "csv_separator": ";",
+    "skip_rows": [0]
+  },
+  "encoding": "UTF-8"
+}
+
+### Crear perfil de importación (PDF tabla)
+POST {{baseUrl}}/api/import-profiles
+Content-Type: application/json
+
+{
+  "bankId": "{{bankId}}",
+  "name": "Open Bank - extracto PDF",
+  "sourceFormat": "pdf_layout",
+  "dateFormat": "Y-m-d",
+  "decimalSeparator": ".",
+  "parserConfig": {
+    "row_start_pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{4}-\\d{2}-\\d{2}",
+    "ignore_patterns": ["^Fecha Operación", "^Página:"],
+    "amount_pattern": "-?\\d+\\.\\d+"
+  },
+  "encoding": "UTF-8"
+}
+
+### Listar perfiles de importación
+GET {{baseUrl}}/api/import-profiles
+
+### Obtener perfil de importación por id
+GET {{baseUrl}}/api/import-profiles/{{importProfileId}}
+
+### Editar perfil de importación
+PUT {{baseUrl}}/api/import-profiles/{{importProfileId}}
+Content-Type: application/json
+
+{
+  "name": "Open Bank - extracto PDF (actualizado)",
+  "sourceFormat": "pdf_layout",
+  "dateFormat": "Y-m-d",
+  "decimalSeparator": ".",
+  "parserConfig": {
+    "row_start_pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{4}-\\d{2}-\\d{2}",
+    "ignore_patterns": ["^Fecha Operación", "^Página:"],
+    "amount_pattern": "-?\\d+\\.\\d+"
+  },
+  "encoding": "UTF-8",
+  "isActive": true
+}
+
+### Eliminar perfil de importación
+DELETE {{baseUrl}}/api/import-profiles/{{importProfileId}}
