@@ -69,11 +69,16 @@ Clasificación temática. Soporta subcategorías con `parent_id`.
 - `id` uuid PK, `name` string, `slug` string, `parent_id` uuid FK nullable, `sort_order` integer
 
 ### ImportProfile
-Define cómo interpretar el formato de un extracto bancario.
+Define cómo interpretar el formato de un extracto bancario. Un mismo banco puede tener varios perfiles (uno por formato de fichero soportado).
 - `id` uuid PK, `bank_id` uuid FK, `name` string
-- `column_mapping` json (ej: `{"fecha": 0, "concepto": 2, "importe": 3}`)
-- `date_format` string, `decimal_separator` string(1), `csv_separator` string(1)
-- `encoding` string, `skip_rows` json, `is_active` boolean
+- `source_format` enum(csv, pdf_layout) — determina la forma que debe tener `parser_config`
+- `parser_config` json, cuya forma depende de `source_format`:
+  - `csv`: `{"column_mapping": {"fecha": 0, "concepto": 2, "importe": 3}, "csv_separator": ";", "skip_rows": [0]}`
+  - `pdf_layout` (extracto en tabla PDF, posiblemente multipágina con celdas multilínea): `{"row_start_pattern": "...", "value_date_pattern": "...", "ignore_patterns": ["..."], "amount_pattern": "..."}` — patrones que permiten reagrupar líneas envueltas en filas lógicas y descartar cabeceras/pies repetidos por página, ya que el mapping por índice de columna (propio de CSV) no aplica a un PDF con layout
+- `date_format` string, `decimal_separator` string(1)
+- `encoding` string, `is_active` boolean
+
+> Nota: `column_mapping`, `csv_separator` y `skip_rows` (los tres específicos de CSV) viven ahora dentro de `parser_config.csv` en vez de ser columnas propias, para poder acomodar también `pdf_layout` sin campos que queden `null` para el otro formato.
 
 ### ClassificationRule
 Regla determinista. Prioridad sobre la IA.
